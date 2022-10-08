@@ -106,14 +106,17 @@ Proof.
   eapply (adequacy_lt lrfull₂ termSm'); eauto with arith.
 Qed.
 
-Lemma fullAbstraction {t₁ t₂ τ} :
-  ValidTy τ ->
+Definition FullAbstraction (t₁ : I.Tm) (t₂ : I.Tm) (τ : Ty) : Prop :=
   ⟪ I.empty i⊢ t₁ : τ ⟫ →
   ⟪ I.empty i⊢ t₂ : τ ⟫ →
   ⟪ I.empty i⊢ t₁ ≃ t₂ : τ ⟫ ↔
   ⟪ E.empty e⊢ compie t₁ ≃ compie t₂ : τ ⟫.
+
+Lemma fullAbstraction {t₁ t₂ τ} : FullAbstraction t₁ t₂ τ.
 Proof.
+  unfold FullAbstraction.
   intros.
+  pose proof I.typed_terms_are_valid t₁ τ ValidEnv_nil H as vτ.
   split;
   eauto using equivalenceReflectionEmpty, equivalencePreservation.
 Qed.

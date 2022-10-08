@@ -98,13 +98,14 @@ Proof.
   eapply (adequacy_lt lrfull₂ termSm'); eauto with arith.
 Qed.
 
-Lemma fullAbstraction {t₁ t₂ τ} :
+Definition FullAbstraction (t₁ : F.Tm) (t₂ : F.Tm) (τ : F.Ty) : Prop :=
   ⟪ F.empty ⊢ t₁ : τ ⟫ →
   ⟪ F.empty ⊢ t₂ : τ ⟫ →
   ⟪ F.empty ⊢ t₁ ≃ t₂ : τ ⟫ ↔
   ⟪ I.empty i⊢ compfi t₁ ≃ compfi t₂ : compfi_ty τ ⟫.
+
+Lemma fullAbstraction {t₁ t₂ τ} : FullAbstraction t₁ t₂ τ.
 Proof.
-  intros.
   split;
   eauto using equivalenceReflection, equivalencePreservation.
 Qed.
