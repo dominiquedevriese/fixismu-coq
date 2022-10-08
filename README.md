@@ -28,8 +28,11 @@ This is checked using the [docker-coq] github action.
 ### Assumptions
 
 We depend on only two Axioms
-* `Coq.Logic.FunctionalExtensionality.functional_extensionality_dep`
-* `Coq.Logic.Eqdep.Eq_rect_eq.eq_rect_eq`
+* [`Coq.Logic.FunctionalExtensionality.functional_extensionality_dep`][functional_extensionality_dep]
+* [`Coq.Logic.Eqdep.Eq_rect_eq.eq_rect_eq`][eq_rect_eq]
+
+[functional_extensionality_dep]: https://coq.inria.fr/library/Coq.Logic.FunctionalExtensionality.html#functional_extensionality_dep
+[eq_rect_eq]: https://coq.inria.fr/library/Coq.Logic.Eqdep.html#Eq_rect_eq.eq_rect_eq
 
 ## Paper-to-artifact correspondence guide
 
