@@ -86,3 +86,9 @@ Note that we indicate which compiler we are working with (or proving claims abou
 | Equivalent types have the same term relation | Page 30, Corollary 1 | ? | ? | |
 | Emulate is semantics preserving | Page 30, Lemma 11 | Backtrans{FI, FE, IE}/Emulate.v | `Lemma emulate_works` | |
 | Emulate is semantics preserving for contexts | Page 31, Lemma 12 | Backtrans{FI, FE, IE}/Emulate.v | `Lemma emulate_pctx_works` | |
+| Inject and extract functions | Page 31, Figure 14 | Backtrans{FI, FE, IE}/InjectExtract.v | `Definition inject`, `Definition extract` | |
+| Inject and extract are semantics preserving | Page 32, Lemma 13 | Backtrans{FI, FE, IE}/InjectExtract.v | `Lemma inject_works with extract_works` | |
+| Approximate backtranslation for Iso contexts into Fix | Page 34, Definition 11 | ? | ? | |
+| Correctness of backtranslation for Iso contexts into Fix | Page 35, Lemma 14 | ? | ? | |
+| Compilation preserves equivalence | Page 35-36, Theorems 6-8 | FullAbstraction{FI, FE, IE}.v | `Lemma equivalencePreservation` | |
+| Compilation is fully abstract | Page 36, Theorems 9-11 | FullAbstraction{FI, FE, IE}.v | `Lemma FullAbstraction` | |
