@@ -22,7 +22,7 @@ Require Import Db.Lemmas.
 
 Require Import LogRelFE.LR.
 (* Require Import CompilerFE.ProtectConfine. *)
-Require Import CompilerFE.CompilerFE.
+Require Import CompilerFE.Compiler.
 
 Require Import BacktransFE.UValHelpers.
 Require Import BacktransFE.UValHelpers2.

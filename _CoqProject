@@ -16,9 +16,9 @@ BacktransIE/Emulate.v
 BacktransIE/InjectExtract.v
 Common/Common.v
 Common/Relations.v
-CompilerFI/CompilerFI.v
-CompilerFE/CompilerFE.v
-CompilerIE/CompilerIE.v
+CompilerFI/Compiler.v
+CompilerFE/Compiler.v
+CompilerIE/Compiler.v
 Db/Inst.v
 Db/Lemmas.v
 Db/Spec.v

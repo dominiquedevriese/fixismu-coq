@@ -5,7 +5,7 @@ Require Import StlcFix.LemmasTyping.
 Require Import StlcEqui.SpecEquivalent.
 Require Import StlcEqui.LemmasEvaluation.
 
-Require Import CompilerFE.CompilerFE.
+Require Import CompilerFE.Compiler.
 
 Require Import UValFE.UVal.
 

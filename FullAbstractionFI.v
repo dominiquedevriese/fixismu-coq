@@ -5,7 +5,7 @@ Require Import StlcFix.LemmasTyping.
 Require Import StlcIso.SpecEquivalent.
 Require Import StlcIso.LemmasEvaluation.
 
-Require Import CompilerFI.CompilerFI.
+Require Import CompilerFI.Compiler.
 
 Require Import UValFI.UVal.
 
@@ -57,7 +57,7 @@ Proof.
 
   pose proof (proj2 (proj2 lrem₁) _ _ lrpe₁) as lrfull₁.
 
-  assert (F.Terminating (F.pctx_app (F.app (inject (S (S n)) τ) t₁)
+ assert (F.Terminating (F.pctx_app (F.app (inject (S (S n)) τ) t₁)
                                     (F.eraseAnnot_pctx (emulate_pctx (S (S n)) Cu)))) as termF
     by (eapply (adequacy_gt lrfull₁ termN); eauto with arith).
 

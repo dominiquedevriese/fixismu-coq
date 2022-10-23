@@ -24,7 +24,7 @@ Require Import Db.Lemmas.
 
 Require Import LogRelIE.LR.
 (* Require Import CompilerIE.ProtectConfine. *)
-Require Import CompilerIE.CompilerIE.
+Require Import CompilerIE.Compiler.
 
 Require Import BacktransIE.UValHelpers.
 Require Import BacktransIE.UValHelpers2.

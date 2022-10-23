@@ -20,7 +20,7 @@ Require Import Db.Lemmas.
 
 Require Import LogRelFI.LR.
 (* Require Import CompilerFI.ProtectConfine. *)
-Require Import CompilerFI.CompilerFI.
+Require Import CompilerFI.Compiler.
 
 Require Import BacktransFI.UValHelpers.
 Require Import BacktransFI.UValHelpers2.
