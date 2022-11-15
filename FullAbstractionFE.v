@@ -18,6 +18,10 @@ Require Import BacktransFE.Emulate.
 Require Import BacktransFE.InjectExtract.
 Require Import BacktransFE.UpgradeDowngrade.
 
+Definition backtranslateCtx n τ Cu : F.PCtx := (F.eraseAnnot_pctx (F.pctxA_cat
+                      (F.a_papp₂ τ (UValFE n (compfi_ty τ)) (injectA n τ) F.a_phole)
+                      (emulate_pctx n Cu))).
+
 Lemma equivalencePreservation {t₁ t₂ τ} :
   ⟪ F.empty ⊢ t₁ : τ ⟫ →
   ⟪ F.empty ⊢ t₂ : τ ⟫ →
@@ -71,11 +75,10 @@ Proof.
 
   assert (vε : ValidEnv E.empty) by eauto with tyvalid.
   pose proof (tEmCu := emulate_pctx_T (n := S (S n)) vε vτ' tCu).
-  assert (F.Terminating (F.pctx_app t₂ (F.eraseAnnot_pctx (F.pctxA_cat
-                 (F.a_papp₂ τ (UValFE (S (S n)) (compfi_ty τ)) (injectA (S (S n)) τ) F.a_phole)
-                 (emulate_pctx (S (S n)) Cu))))) as termS'
+  assert (F.Terminating (F.pctx_app t₂ (backtranslateCtx (S (S n)) τ Cu))) as termS'
       by (eapply ceq;
           eauto using F.pctxtyping_cat_annot, injectAT, emulate_pctx_T, F.PCtxTypingAnnot).
+  unfold backtranslateCtx in termS'.
 
   destruct (F.Terminating_TermHor termS') as [m termSm']; clear termS'.
 

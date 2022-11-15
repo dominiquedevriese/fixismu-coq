@@ -18,6 +18,15 @@ Require Import BacktransIE.Emulate.
 Require Import BacktransIE.InjectExtract.
 Require Import BacktransIE.UpgradeDowngrade.
 
+Definition backtranslateCtx n τ Cu : I.PCtx := (I.eraseAnnot_pctx (I.pctxA_cat
+                      (I.ia_papp₂ τ (UValIE n τ) (injectA n τ) I.ia_phole)
+                      (emulate_pctx n Cu))).
+
+Lemma backtranslation_works {m n dir }
+
+
+
+
 Lemma equivalencePreservation {t₁ t₂ τ} :
   ValidTy τ ->
   ⟪ I.empty i⊢ t₁ : τ ⟫ →
@@ -75,15 +84,14 @@ Proof.
   assert (vε : ValidEnv E.empty) by eauto with tyvalid.
   assert (vuvalτ : ValidTy (UValIE (S (S n)) τ')) by crushValidTy_with_UVal.
   pose proof (tEmCu := emulate_pctx_T (n := S (S n)) vε vτ' tCu).
-  assert (I.Terminating (I.pctx_app t₂ (I.eraseAnnot_pctx (I.pctxA_cat
-                 (I.ia_papp₂ τ (UValIE (S (S n)) τ) (injectA (S (S n)) τ) I.ia_phole)
-                 (emulate_pctx (S (S n)) Cu))))) as termS'.
+  assert (I.Terminating (I.pctx_app t₂ (backtranslateCtx (S (S n)) τ Cu))) as termS'.
   { eapply ceq.
     exact vuvalτ.
     repeat (I.crushTypingMatchIAH + I.crushTypingMatchIAH2);
     crushValidTy_with_UVal; eauto using I.pctxtyping_cat_annot, injectAT, emulate_pctx_T, I.PCtxTypingAnnot.
     assumption.
   }
+  unfold backtranslateCtx in termS'.
 
   destruct (I.Terminating_TermHor termS') as [m termSm']; clear termS'.
 
