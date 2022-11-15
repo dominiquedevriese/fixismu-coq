@@ -43,20 +43,20 @@ Note that we indicate which compiler we are working with (or proving claims abou
 
 | Definition / Theorem | Paper | File | Name of Formalization | Notation |
 |---|---|---|---|---|
-| Syntax of STLCs | Page 7, Figure ? | Stlc{Fix, Iso, Equi}/SpecSyntax.v | `Inductive Tm` |  |
-| Syntax of Program contexts | Page 7, Figure ? | Stlc{Fix, Iso, Equi}/SpecSyntax.v | `Inductive PCtx` |  |
-| Size of STLC terms | Page 7, Figure ? | Stlc{Fix, Iso, Equi}/Size.v | `Fixpoint size` |  |
-| 2.2 STLC Static Semantics | Page 7-8, Figure ? | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive Typing` | `⟪  Γ `?`⊢ t : T  ⟫` where ? is either the empty string, i, or e for STLC `Fix`, `Iso`, or `Equi` respectively |
-| 2.2 Program context static Semantics | Page 8-9, Figure ? | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive PCtxTyping` | `⟪ `?`⊢ C : Γ₀ , τ₀ → Γ , τ ⟫`, with ? as above
-| 2.3 Dynamic Semantics primitive reductions | Page 10, Figure ? | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Inductive eval₀` | `t₁ -->₀ t₂` |
-| 2.3 Dynamic Semantics non-primitive reductions | Page 10, Figure ? | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Inductive eval` | `t₁ --> t₂` |
+| Syntax of STLCs | Page 7 | Stlc{Fix, Iso, Equi}/SpecSyntax.v | `Inductive Tm` |  |
+| Syntax of Program contexts | Page 7 | Stlc{Fix, Iso, Equi}/SpecSyntax.v | `Inductive PCtx` |  |
+| Size of STLC terms | Page 7 | Stlc{Fix, Iso, Equi}/Size.v | `Fixpoint size` |  |
+| 2.2 STLC Static Semantics | Page 7-8 | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive Typing` | `⟪  Γ `?`⊢ t : T  ⟫` where ? is either the empty string, i, or e for STLC `Fix`, `Iso`, or `Equi` respectively |
+| 2.2 Program context static Semantics | Page 8-9 | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive PCtxTyping` | `⟪ `?`⊢ C : Γ₀ , τ₀ → Γ , τ ⟫`, with ? as above
+| 2.3 Dynamic Semantics primitive reductions | Page 10 | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Inductive eval₀` | `t₁ -->₀ t₂` |
+| 2.3 Dynamic Semantics non-primitive reductions | Page 10 | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Inductive eval` | `t₁ --> t₂` |
 | 2.4 Termination | Page 10, Definition 1 | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Definition Terminating` | `t ⇓` |
-| 2.4 (Bounded termination) | Page 10, Figure ? | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Definition TerminatingN` | `t ⇓_ n` |
-| 2.4 (Size-bounded termination) | Page 10, Figure ? | Stlc{Fix, Iso, Equi}/Size.v  | `Definition TermHor` |  |
+| 2.4 (Bounded termination) | Page 10 | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Definition TerminatingN` | `t ⇓_ n` |
+| 2.4 (Size-bounded termination) | Page 10 | Stlc{Fix, Iso, Equi}/Size.v  | `Definition TermHor` |  |
 | Relation between Termination and Size-Bound Termination | Page 11, Theorem 1 | Stlc{Fix, Iso, Equi}/Size.v | `Lemma evalHor_evaln` and `Lemma TermHor_TerminatingN` | |
 | Observation relation | Page 11, Figure 2 | LogRel{FI, FE, IE}/LR.v | `Definition Obs` |  |
-| Pseudo types | Page 12, Figure ? | LogRel{FI, FE, IE}/PseudoType.v | `Inductive PTy` | |
-| Pseudo type conversions | Page 12, Figure ? | LogRel{FI, FE, IE}/PseudoType.v | `Fixpoint repEmul`, `Fixpoint fxToIs`, `Fixpoint isToEq`, `Definition OfType`, `Definition OfTypeStlcIso`, `Definition OfTypeStlcEqui` | |
+| Pseudo types | Page 12 | LogRel{FI, FE, IE}/PseudoType.v | `Inductive PTy` | |
+| Pseudo type conversions | Page 12 | LogRel{FI, FE, IE}/PseudoType.v | `Fixpoint repEmul`, `Fixpoint fxToIs`, `Fixpoint isToEq`, `Definition OfType`, `Definition OfTypeStlcIso`, `Definition OfTypeStlcEqui` | |
 | Value relation | Page 13, Figure 3 | LogRel{FI, FE, IE}/LR.v | `Definition valrel` |  |
 | Term relation | Page 13, Figure 3 | LogRel{FI, FE, IE}/LR.v | `Definition termrel` | |
 | Context relation | Page 13, Figure 3 | LogRel{FI, FE, IE}/LR.v | `Definition contrel` | |
@@ -82,8 +82,8 @@ Note that we indicate which compiler we are working with (or proving claims abou
 | Emulation of targets contexts into source ones | Page 29, Figure 13 | Backtrans{FI, FE, IE}/Emulate.v | `Fixpoint emulate_pctx` | |
 | Equivalent types are backtranslated to the same type | Page 29, Theorem 5 | UValIE/UVal.v | `Lemma UVal_eq` | |
 | Compatibility for λ emulation | Page 30, Lemma 9 | Backtrans{FI, FE, IE}/Emulate.v | `Lemma compat_emul_abs` | |
-| Compatibility lemma for emulation of type equality | Page 30, Lemma 10 | ? | ? | |
-| Equivalent types have the same term relation | Page 30, Corollary 1 | ? | ? | |
+| Compatibility lemma for emulation of type equality | Page 30, Lemma 10 | LogRel{FE, IE}/LemmasInversion.v | `Lemma compat_type_eq` | |
+| Equivalent types have the same term relation | Page 30, Corollary 1 | LogRel{FE, IE}/LemmasInversion.v | `Lemma valrel_tyeq'` | |
 | Emulate is semantics preserving | Page 30, Lemma 11 | Backtrans{FI, FE, IE}/Emulate.v | `Lemma emulate_works` | |
 | Emulate is semantics preserving for contexts | Page 31, Lemma 12 | Backtrans{FI, FE, IE}/Emulate.v | `Lemma emulate_pctx_works` | |
 | Inject and extract functions | Page 31, Figure 14 | Backtrans{FI, FE, IE}/InjectExtract.v | `Definition inject`, `Definition extract` | |
