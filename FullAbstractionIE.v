@@ -22,10 +22,19 @@ Definition backtranslateCtx n τ Cu : I.PCtx := (I.eraseAnnot_pctx (I.pctxA_cat
                       (I.ia_papp₂ τ (UValIE n τ) (injectA n τ) I.ia_phole)
                       (emulate_pctx n Cu))).
 
-Lemma backtranslation_works {m n dir }
-
-
-
+Lemma backtranslateCtx_works {Cu m n d p τs τu ts tu} :
+  ValidTy τu → ValidTy τs →
+  dir_world_prec m n d p →
+  ⟪ ea⊢ Cu : empty, τs → empty, τu ⟫ →
+  ⟪ pempty ⊩ ts ⟦ d, n ⟧ tu : embed τs ⟫ →
+  ⟪ pempty ⊩ (I.pctx_app ts (backtranslateCtx m τs Cu)) ⟦ d, n ⟧ E.pctx_app tu (eraseAnnot_pctx
+      Cu) : pEmulDV m p τu ⟫.
+  intros vτu vτs dwp tCu lr; destruct p; unfold backtranslateCtx;
+  rewrite I.eraseAnnot_pctx_cat, I.pctx_cat_app;
+  [change pempty with (toEmulDV m precise empty) | change pempty with (toEmulDV m imprecise I.empty)];
+  eapply emulate_pctx_works; eauto using dwp_precise, dwp_imprecise with tyvalid;
+  eapply inject_works_open; eauto using dwp_precise, dwp_imprecise with tyvalid.
+Qed.
 
 Lemma equivalencePreservation {t₁ t₂ τ} :
   ValidTy τ ->
@@ -58,16 +67,13 @@ Proof.
   { change pempty with (embedCtx (repEmulCtx pempty)).
       eapply compie_correct; crushValidTy_with_UVal.
       cbn; eauto using ValidEnv_nil. }
-  assert (⟪ pempty ⊩ I.app (inject (S (S n)) τ) t₁ ⟦ dir_gt , S n ⟧ compie t₁ : pEmulDV (S (S n)) precise τ ⟫) as lrpe₁
-      by (eapply inject_works_open;
-          eauto using dwp_precise with arith).
 
-  assert (⟪ ⊩ I.eraseAnnot_pctx (emulate_pctx (S (S n)) Cu) ⟦ dir_gt , S n ⟧ (eraseAnnot_pctx Cu) :
-              pempty , pEmulDV (S (S n)) precise τ → pempty , pEmulDV (S (S n)) precise τ' ⟫) as lrem₁ by
-      (change pempty with (toEmulDV (S (S n)) precise E.empty);
-       eapply emulate_pctx_works; eauto using dwp_precise with arith tyvalid).
+  unshelve epose proof (lrfull₁ := backtranslateCtx_works vτ' vτ (dwp_precise _) tCu lre₁).
+  exact (S (S n)).
+  eauto.
 
-  pose proof (proj2 (proj2 lrem₁) _ _ lrpe₁) as lrfull₁.
+  unfold backtranslateCtx in lrfull₁.
+  rewrite I.eraseAnnot_pctx_cat, I.pctx_cat_app in lrfull₁.
 
   assert (I.Terminating (I.pctx_app (I.app (inject (S (S n)) τ) t₁)
                                     (I.eraseAnnot_pctx (emulate_pctx (S (S n)) Cu)))) as termI
@@ -99,17 +105,8 @@ Proof.
       by (change pempty with (embedCtx (repEmulCtx pempty)); 
           eapply compie_correct;
           cbn; assumption).
-  assert (⟪ pempty ⊩ I.app (inject (S (S n)) τ) t₂ ⟦ dir_lt , S m ⟧ compie t₂ : pEmulDV (S (S n)) imprecise τ ⟫) as lrpe₂
-      by (eapply inject_works_open;
-          eauto using dwp_imprecise).
 
-  assert (⟪ ⊩ I.eraseAnnot_pctx (emulate_pctx (S (S n)) Cu) ⟦ dir_lt , S m ⟧ (eraseAnnot_pctx Cu) : 
-              pempty , pEmulDV (S (S n)) imprecise τ → pempty , pEmulDV (S (S n)) imprecise τ' ⟫) as lrem₂
-      by (change pempty with (toEmulDV (S (S n)) imprecise E.empty);
-          eapply emulate_pctx_works; eauto using dwp_imprecise).
-
-  pose proof (proj2 (proj2 lrem₂) _ _ lrpe₂) as lrfull₂.
-  rewrite I.eraseAnnot_pctx_cat, I.pctx_cat_app in termSm'.
+  epose proof (lrfull₂ := backtranslateCtx_works vτ' vτ dwp_imprecise tCu lre₂).
 
   eapply (adequacy_lt lrfull₂ termSm'); eauto with arith.
 Qed.
