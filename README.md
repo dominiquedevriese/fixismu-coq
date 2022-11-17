@@ -52,7 +52,10 @@ find in the Coq libraries
   * LogRelFI/*.v: Backtranslation from StlcIso to StlcFix
   * LogRelFE/*.v: Backtranslation from StlcEqui to StlcFix
   * LogRelIE/*.v: Backtranslation from StlcEqui to StlcIso
-* FullAbstraction.v: Proof of equivalence preservation and full abstraction.
+* FullAbstraction:  Proofs of equivalence preservation and full abstraction
+  * FullAbstractionFI.v: From StlcFix to StlcIso
+  * FullAbstractionFE.v: From StlcFix to StlcEqui
+  * FullAbstractionIE.v: From StlcIso to StlcEqui
 
 [arxiv]: https://arxiv.org/abs/2010.10859
 [STLC]: https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
