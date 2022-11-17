@@ -67,7 +67,7 @@ find in the Coq libraries
 - 8.15
 - 8.16
 
-This is checked using the [docker-coq] github action (see the badge at the top of this file).
+This is checked using the [docker-coq] github action (see the badge at the top of this readme).
 
 [docker-coq]: https://github.com/coq-community/docker-coq-action
 
