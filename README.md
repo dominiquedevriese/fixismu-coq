@@ -93,8 +93,8 @@ We depend on only two Axioms
    erasing these annotations, along with proofs that these conversions are
    type-sound.
    
-   This is only an implementation detail—the top-level full abstraction
-   results are stated with respect to the "normal" specification.
+   This is only an implementation detail—the top-level full abstraction results
+   are stated with respect to the "normal" language specifications.
 
 2. This artifact, unlike the paper, cannot elide the contractiveness of
    recursive types for consision. You will see `ValidTy τ` throughout the
@@ -112,7 +112,7 @@ Note that we indicate which compiler we are working with (or proving claims abou
 | Syntax of STLCs | Page 7 | Stlc{Fix, Iso, Equi}/SpecSyntax.v | `Inductive Tm` |  |
 | Syntax of Program contexts | Page 7 | Stlc{Fix, Iso, Equi}/SpecSyntax.v | `Inductive PCtx` |  |
 | Size of STLC terms | Page 7 | Stlc{Fix, Iso, Equi}/Size.v | `Fixpoint size` |  |
-| 2.2 STLC Static Semantics | Page 7-8 | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive Typing` | `⟪  Γ `?`⊢ t : T  ⟫` where ? is either the empty string, i, or e for STLC `Fix`, `Iso`, or `Equi` respectively |
+| 2.2 STLC Static Semantics | Page 7-8 | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive Typing` | `⟪  Γ `?`⊢ t : T  ⟫` where ? is either the empty string, i, or e for Stlc `Fix`, `Iso`, or `Equi` respectively |
 | 2.2 Program context static Semantics | Page 8-9 | Stlc{Fix, Iso, Equi}/SpecTyping.v | `Inductive PCtxTyping` | `⟪ `?`⊢ C : Γ₀ , τ₀ → Γ , τ ⟫`, with ? as above
 | 2.3 Dynamic Semantics primitive reductions | Page 10 | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Inductive eval₀` | `t₁ -->₀ t₂` |
 | 2.3 Dynamic Semantics non-primitive reductions | Page 10 | Stlc{Fix, Iso, Equi}/SpecEvaluation.v | `Inductive eval` | `t₁ --> t₂` |
@@ -133,7 +133,7 @@ Note that we indicate which compiler we are working with (or proving claims abou
 | Adequacy for ≈ for FI | Page 15, Lemma 1 | LogRelFI/LemmasLR.v | `Lemma adequacy_lt` and `Lemma adequacy_gt` | |
 | Contextual Equivalence | Page 16, Definition 9 | Stlc{Fix, Iso, Equi}/SpecEquivalent.v | `Definition PCtxEquivalent` | `⟪  Γ ⊢ t₁ ≃ t₂ : τ  ⟫` |
 | Fully-abstract compilation | Page 16, Definition 10 | FullAbstraction{FI, FE, IE}.v | `Definition FullAbstraction` | |
-| The type of backtranslated terms | Page 18, Figure 5 | UVal{FI, FE, IE}.v | `Fixpoint UVal`{`FI`, `FE`, `IE`} | |
+| The type of backtranslated terms | Page 18, Figure 5 | UVal{FI, FE, IE}/UVal.v | `Fixpoint UVal`{`FI`, `FE`, `IE`} | |
 | The upgrade function | Page 20, Figure 6 | BackTrans{FI, FE, IE}/UpgradeDowngrade.v | `Fixpoint upgrade` | |
 | The downgrade function | Page 21, Figure 7 | BackTrans{FI, FE, IE}/UpgradeDowngrade.v | `Fixpoint downgrade` | |
 | Compacted functions used to manipulate backtranslated values | Page 23, Figure 8 | BackTrans{FI, FE, IE}/UValHelpers.v | `Section Intro` and `Section Destruct` | |
