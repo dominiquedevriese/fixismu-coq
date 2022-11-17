@@ -50,60 +50,60 @@ Local Ltac crush :=
   repeat E.crushStlcSyntaxMatchH. (* remove apTm's again *)
 
 Fixpoint injectA (n : nat) (τ : F.Ty) {struct n} : F.TmA :=
-       F.a_abs τ (UValFE n (compfi_ty τ))
+       F.a_abs τ (UValFE n (compfe_ty τ))
              (match n with
               | O => F.a_unit
               | S n => (match τ with
-                       | F.tarr τ₁ τ₂ => F.a_inl (F.tarr (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))) F.tunit
-                                          (F.a_abs (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))
-                                              (F.a_app τ₂ (UValFE n (compfi_ty τ₂))
+                       | F.tarr τ₁ τ₂ => F.a_inl (F.tarr (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))) F.tunit
+                                          (F.a_abs (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))
+                                              (F.a_app τ₂ (UValFE n (compfe_ty τ₂))
                                                        (injectA n τ₂)
                                                        (F.a_app τ₁ τ₂ (F.a_var 1)
-                                                                (F.a_app (UValFE n (compfi_ty τ₁)) τ₁
+                                                                (F.a_app (UValFE n (compfe_ty τ₁)) τ₁
                                                                          (extractA n τ₁)
                                                                          (F.a_var 0)))))
                        | F.tunit => F.a_inl F.tunit F.tunit (F.a_var 0)
                        | F.tbool => F.a_inl F.tbool F.tunit (F.a_var 0)
-                       | F.tprod τ₁ τ₂ => F.a_inl (F.tprod (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))) F.tunit
-                                                 (F.a_pair (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))
-                                                           (F.a_app τ₁ (UValFE n (compfi_ty τ₁)) (injectA n τ₁)
+                       | F.tprod τ₁ τ₂ => F.a_inl (F.tprod (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))) F.tunit
+                                                 (F.a_pair (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))
+                                                           (F.a_app τ₁ (UValFE n (compfe_ty τ₁)) (injectA n τ₁)
                                                                     (F.a_proj₁ τ₁ τ₂ (F.a_var 0)))
-                                                           (F.a_app τ₂ (UValFE n (compfi_ty τ₂)) (injectA n τ₂)
+                                                           (F.a_app τ₂ (UValFE n (compfe_ty τ₂)) (injectA n τ₂)
                                                                     (F.a_proj₂ τ₁ τ₂ (F.a_var 0))))
-                       | F.tsum τ₁ τ₂ => F.a_inl (F.tsum (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))) F.tunit (F.a_caseof τ₁ τ₂ (F.tsum (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))) (F.a_var 0)
-                                                 (F.a_inl (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))
-                                                          (F.a_app τ₁ (UValFE n (compfi_ty τ₁)) (injectA n τ₁)
+                       | F.tsum τ₁ τ₂ => F.a_inl (F.tsum (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))) F.tunit (F.a_caseof τ₁ τ₂ (F.tsum (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))) (F.a_var 0)
+                                                 (F.a_inl (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))
+                                                          (F.a_app τ₁ (UValFE n (compfe_ty τ₁)) (injectA n τ₁)
                                                                  (F.a_var 0)))
-                                                 (F.a_inr (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))
-                                                          (F.a_app τ₂ (UValFE n (compfi_ty τ₂)) (injectA n τ₂)
+                                                 (F.a_inr (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))
+                                                          (F.a_app τ₂ (UValFE n (compfe_ty τ₂)) (injectA n τ₂)
                                                                (F.a_var 0))))
                        end)
                 end)
   with extractA (n : nat) (τ : F.Ty) {struct n} : F.TmA :=
-         let caseτ : F.Tm → F.Tm := caseUVal (UValFE n (compfi_ty τ)) in
-         F.a_abs (UValFE n (compfi_ty τ)) τ
+         let caseτ : F.Tm → F.Tm := caseUVal (UValFE n (compfe_ty τ)) in
+         F.a_abs (UValFE n (compfe_ty τ)) τ
                (match n with
                    | O => stlcOmegaA τ
                    | S n => match τ with
-                           | F.tarr τ₁ τ₂ => F.a_abs τ₁ τ₂ (F.a_app (UValFE n (compfi_ty τ₂)) τ₂
+                           | F.tarr τ₁ τ₂ => F.a_abs τ₁ τ₂ (F.a_app (UValFE n (compfe_ty τ₂)) τ₂
                                                                 (extractA n τ₂)
-                                                                (F.a_app (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂))
+                                                                (F.a_app (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂))
                                                                          (caseArrA n (F.a_var 1)
-                                                                                   (compfi_ty τ₁)
-                                                                                   (compfi_ty τ₂))
-                                                                         (F.a_app τ₁ (UValFE n (compfi_ty τ₁)) (injectA n τ₁)
+                                                                                   (compfe_ty τ₁)
+                                                                                   (compfe_ty τ₂))
+                                                                         (F.a_app τ₁ (UValFE n (compfe_ty τ₁)) (injectA n τ₁)
                                                                                   (F.a_var 0))))
                            | F.tunit => caseUnitA n (F.a_var 0)
                            | F.tbool => caseBoolA n (F.a_var 0)
                            | F.tprod τ₁ τ₂ => F.a_pair τ₁ τ₂
-                                                      (F.a_app (UValFE n (compfi_ty τ₁)) τ₁ (extractA n τ₁)
-                                                               (F.a_proj₁ (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂)) (caseProdA n (F.a_var 0) (compfi_ty τ₁) (compfi_ty τ₂))))
-                                                      (F.a_app (UValFE n (compfi_ty τ₂)) τ₂ (extractA n τ₂)
-                                                               (F.a_proj₂ (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂)) (caseProdA n (F.a_var 0) (compfi_ty τ₁) (compfi_ty τ₂))))
-                           | F.tsum τ₁ τ₂ => F.a_caseof (UValFE n (compfi_ty τ₁)) (UValFE n (compfi_ty τ₂)) (F.tsum τ₁ τ₂)
-                                                       (caseSumA n (F.a_var 0) (compfi_ty τ₁) (compfi_ty τ₂))
-                                                       (F.a_inl τ₁ τ₂ (F.a_app (UValFE n (compfi_ty τ₁)) τ₁ (extractA n τ₁) (F.a_var 0)))
-                                                       (F.a_inr τ₁ τ₂ (F.a_app (UValFE n (compfi_ty τ₂)) τ₂ (extractA n τ₂) (F.a_var 0)))
+                                                      (F.a_app (UValFE n (compfe_ty τ₁)) τ₁ (extractA n τ₁)
+                                                               (F.a_proj₁ (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂)) (caseProdA n (F.a_var 0) (compfe_ty τ₁) (compfe_ty τ₂))))
+                                                      (F.a_app (UValFE n (compfe_ty τ₂)) τ₂ (extractA n τ₂)
+                                                               (F.a_proj₂ (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂)) (caseProdA n (F.a_var 0) (compfe_ty τ₁) (compfe_ty τ₂))))
+                           | F.tsum τ₁ τ₂ => F.a_caseof (UValFE n (compfe_ty τ₁)) (UValFE n (compfe_ty τ₂)) (F.tsum τ₁ τ₂)
+                                                       (caseSumA n (F.a_var 0) (compfe_ty τ₁) (compfe_ty τ₂))
+                                                       (F.a_inl τ₁ τ₂ (F.a_app (UValFE n (compfe_ty τ₁)) τ₁ (extractA n τ₁) (F.a_var 0)))
+                                                       (F.a_inr τ₁ τ₂ (F.a_app (UValFE n (compfe_ty τ₂)) τ₂ (extractA n τ₂) (F.a_var 0)))
                            end
                end).
 Definition inject n τ := eraseAnnot (injectA n τ).
@@ -121,18 +121,18 @@ Proof.
   destruct n; destruct τ; simpl; eauto with eval.
 Qed.
 
-Lemma injectAT {n τ Γ} : ⟪ Γ a⊢ injectA n τ : F.tarr τ (UValFE n (compfi_ty τ)) ⟫
-with extractAT {n τ Γ} : ⟪ Γ a⊢ extractA n τ : F.tarr (UValFE n (compfi_ty τ)) τ ⟫.
+Lemma injectAT {n τ Γ} : ⟪ Γ a⊢ injectA n τ : F.tarr τ (UValFE n (compfe_ty τ)) ⟫
+with extractAT {n τ Γ} : ⟪ Γ a⊢ extractA n τ : F.tarr (UValFE n (compfe_ty τ)) τ ⟫.
 Proof.
   - destruct n, τ; unfold injectA; eauto with typing uval_typing.
   - destruct n, τ; unfold extractA; eauto with typing uval_typing.
 Qed.
 
-Lemma injectT {n τ Γ} : ⟪ Γ ⊢ inject n τ : F.tarr τ (UValFE n (compfi_ty τ)) ⟫.
+Lemma injectT {n τ Γ} : ⟪ Γ ⊢ inject n τ : F.tarr τ (UValFE n (compfe_ty τ)) ⟫.
 Proof.
   eauto using eraseAnnotT, injectAT.
 Qed.
-Lemma extractT {n τ Γ} : ⟪ Γ ⊢ extract n τ : F.tarr (UValFE n (compfi_ty τ)) τ ⟫.
+Lemma extractT {n τ Γ} : ⟪ Γ ⊢ extract n τ : F.tarr (UValFE n (compfe_ty τ)) τ ⟫.
 Proof.
   eauto using eraseAnnotT, extractAT.
 Qed.
@@ -251,17 +251,17 @@ Qed.
 Definition inject_works_prop (n : nat) (w : World) (d : Direction) (p : Prec) (vs : F.Tm) (vu : E.Tm) (τ : F.Ty) : Prop :=
   dir_world_prec n w d p →
   valrel d w (embed τ) vs vu →
-  termrelnd₀ d w (pEmulDV n p (compfi_ty τ)) (F.app (inject n τ) vs) vu.
+  termrelnd₀ d w (pEmulDV n p (compfe_ty τ)) (F.app (inject n τ) vs) vu.
   (* ECtx Cs → E.ECtx Cu → *)
   (* contrel d w (embed τ) Cs Cu → *)
   (* (exists vs', F.pctx_app (F.app (inject n τ) vs) Cs -->* F.pctx_app vs' Cs *)
-  (*        ∧ valrel d w (pEmulDV n p (compfi_ty τ)) vs' vu) *)
+  (*        ∧ valrel d w (pEmulDV n p (compfe_ty τ)) vs' vu) *)
   (* ∨ Obs d w (F.pctx_app (F.app (inject n τ) vs) Cs) (E.pctx_app vu Cu). *)
 
 Definition extract_works_prop (n : nat) (w : World) (d : Direction) (p : Prec) (vs : F.Tm) (vu : E.Tm) (τ : F.Ty) : Prop :=
   dir_world_prec n w d p →
   (d = dir_gt -> E.size vu <= w) ->
-  valrel d w (pEmulDV n p (compfi_ty τ)) vs vu →
+  valrel d w (pEmulDV n p (compfe_ty τ)) vs vu →
   termrelnd₀ d w (embed τ) (F.app (extract n τ) vs) vu.
   (* ECtx Cs → E.ECtx Cu → *)
   (* contrel d w (embed τ) Cs Cu → *)
@@ -401,7 +401,7 @@ Proof.
       assumption.
 Qed.
 
-Lemma fizzbuzz {n p τ} : fxToIs (pEmulDV n p (compfi_ty τ)) = fxToIs (embed τ).
+Lemma fizzbuzz {n p τ} : fxToIs (pEmulDV n p (compfe_ty τ)) = fxToIs (embed τ).
 Proof.
   induction τ; cbn; now f_equal.
 Qed.
@@ -437,17 +437,17 @@ Proof.
     destruct (valrel_ptarr_inversion vτ1 vτ2 vr) as (tsb & tub & τ₁' & -> & -> & vτ₁' & tyeq & tytsb & tytub & trtsub).
 
     eapply valrel_termrelnd₀.
-    eapply valrel_inArr; eauto using validTy_compfi_ty.
+    eapply valrel_inArr; eauto using validTy_compfe_ty.
     cbn in tytub.
-    change (UValFE n (compfi_ty τ1)) with (repEmul (pEmulDV n p (compfi_ty τ1))).
+    change (UValFE n (compfe_ty τ1)) with (repEmul (pEmulDV n p (compfe_ty τ1))).
     refine (valrel_lambda _ _ _ _ _ _); cbn;
-      eauto using validPTy_embed, validTy_compfi_ty with tyvalid.
+      eauto using validPTy_embed, validTy_compfe_ty with tyvalid.
     erewrite <-?(fizzbuzz (n := n) (p := p)) in tytub; cbn in tytub.
     crushOfType; cbn;
-      eauto using validPTy_embed, validTy_compfi_ty with tyvalid tyeq;
+      eauto using validPTy_embed, validTy_compfe_ty with tyvalid tyeq;
       cbn;
     eauto using injectT, extractT; E.crushTyping.
-    eauto using validTy_compfi_ty.
+    eauto using validTy_compfe_ty.
     crushTyping.
     rewrite repEmul_embed_leftinv.
     eapply injectT.
@@ -563,7 +563,7 @@ Proof.
     destruct tvu1 as (vvu1 & tvu1).
     destruct tvu2 as (vvu2 & tvu2).
     rewrite <- compiler_is_fxToIs_embed in *.
-    eapply valrel_inProd''; eauto using validTy_compfi_ty.
+    eapply valrel_inProd''; eauto using validTy_compfe_ty.
     rewrite valrel_fixp; unfold valrel'; cbn.
     split; [|split].
     split; split; cbn; crushTyping; eauto.
@@ -609,7 +609,7 @@ Proof.
      eapply (termrelnd₀_ectx' inj₂); F.inferContext; E.inferContext; cbn; eauto.
      intros vs4 vu4 vr4.
      eapply valrel_termrelnd₀, valrel_inProd'', valrel_pair';
-       cbn; eauto using validTy_compfi_ty.
+       cbn; eauto using validTy_compfe_ty.
 Qed.
 
 Lemma inject_tsum_works {n w d p τ₁ τ₂ vs vu} :
@@ -659,17 +659,17 @@ Proof.
         refine (evalstar_ctx _ _ es2); now cbn. }
       cbn.
       eapply valrel_termrelnd₀.
-      eapply valrel_inSum''; eauto using validTy_compfi_ty.
-      eapply valrel_inl''; cbn; eauto using validTy_compfi_ty.
-      assert (tyvs2 : ⟪ PseudoType.F.empty ⊢ vs2 : repEmul (pEmulDV n p (compfi_ty τ₁)) ⟫).
+      eapply valrel_inSum''; eauto using validTy_compfe_ty.
+      eapply valrel_inl''; cbn; eauto using validTy_compfe_ty.
+      assert (tyvs2 : ⟪ PseudoType.F.empty ⊢ vs2 : repEmul (pEmulDV n p (compfe_ty τ₁)) ⟫).
       * eapply (F.preservation_star es2).
         crushTyping.
         rewrite repEmul_embed_leftinv.
         eapply injectT.
       * repeat split; try assumption.
         cbn.
-        refine (WtEq _ tyeq₁ _ _ tyvu'); eauto using validTy_compfi_ty with tyvalid.
-        refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfi_ty with tyvalid.
+        refine (WtEq _ tyeq₁ _ _ tyvu'); eauto using validTy_compfe_ty with tyvalid.
+        refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfe_ty with tyvalid.
       * intros w' fw; exfalso; lia.
     + assert (fw : w < S w) by lia.
       specialize (vrs w fw).
@@ -682,8 +682,8 @@ Proof.
       intros vs2 vu2 vr2.
       cbn.
       eapply valrel_termrelnd₀.
-      eapply valrel_inSum''; eauto using validTy_compfi_ty, valrel_inSum'', valrel_inl'.
-      eapply valrel_inl'; cbn; eauto using validTy_compfi_ty, valrel_inSum'', valrel_inl'.
+      eapply valrel_inSum''; eauto using validTy_compfe_ty, valrel_inSum'', valrel_inl'.
+      eapply valrel_inl'; cbn; eauto using validTy_compfe_ty, valrel_inSum'', valrel_inl'.
   - eapply termrelnd₀_antired_left.
     { (* beta-reduce *)
       eapply evalStepStar.
@@ -714,16 +714,16 @@ Proof.
         refine (evalstar_ctx _ _ es2); now cbn. }
       cbn.
       eapply valrel_termrelnd₀.
-      eapply valrel_inSum''; eauto using validTy_compfi_ty.
-      eapply valrel_inr''; cbn; eauto using validTy_compfi_ty.
-      assert (tyvs2 : ⟪ PseudoType.F.empty ⊢ vs2 : repEmul (pEmulDV n p (compfi_ty τ₂)) ⟫).
+      eapply valrel_inSum''; eauto using validTy_compfe_ty.
+      eapply valrel_inr''; cbn; eauto using validTy_compfe_ty.
+      assert (tyvs2 : ⟪ PseudoType.F.empty ⊢ vs2 : repEmul (pEmulDV n p (compfe_ty τ₂)) ⟫).
       * eapply (F.preservation_star es2).
         crushTyping.
         rewrite repEmul_embed_leftinv.
         eapply injectT.
       * repeat split; cbn; try trivial.
-        refine (WtEq _ tyeq₂ _ _ tyvu'); eauto using validTy_compfi_ty with tyvalid.
-        refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfi_ty with tyvalid.
+        refine (WtEq _ tyeq₂ _ _ tyvu'); eauto using validTy_compfe_ty with tyvalid.
+        refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfe_ty with tyvalid.
       * intros w' fw; exfalso; lia.
     + assert (fw : w < S w) by lia.
       specialize (vrs w fw).
@@ -736,8 +736,8 @@ Proof.
       intros vs2 vu2 vr2.
       cbn.
       eapply valrel_termrelnd₀.
-      eapply valrel_inSum''; eauto using validTy_compfi_ty.
-      eapply valrel_inr'; cbn; eauto using validTy_compfi_ty.
+      eapply valrel_inSum''; eauto using validTy_compfe_ty.
+      eapply valrel_inr'; cbn; eauto using validTy_compfe_ty.
 Qed.
 
 
@@ -755,25 +755,25 @@ Proof.
   repeat change (apTm ?x ?t) with (ap x t).
   fold eraseAnnot.
   change (eraseAnnot _) with (inject n τ₁) at 3.
-  change (eraseAnnot _) with (caseArr n (F.var 1) (compfi_ty τ₁) (compfi_ty τ₂)) at 2.
+  change (eraseAnnot _) with (caseArr n (F.var 1) (compfe_ty τ₁) (compfe_ty τ₂)) at 2.
   change (eraseAnnot _) with (extract n τ₂).
   rewrite inject_sub, extract_sub, caseArr_sub.
   cbn.
   rewrite (wsClosed_invariant (wt_implies_ws tvs)).
   destruct (invert_valrel_pEmulDV_for_caseUValArr vr) as [(vs2 & -> & es2 & vr2) | (-> & div)].
-  - fold compfi_ty in *.
+  - fold compfe_ty in *.
     destruct (valrel_implies_OfType vr2) as [[vvs2 tvs2] _].
     cbn in tvs2.
     eapply valrel_termrelnd₀.
     replace τ₁ with (repEmul (embed τ₁)) at 2 by eapply repEmul_embed_leftinv.
     cbn in tvu.
-    E.stlcCanForm; eauto using validTy_compfi_ty with tyvalid tyeq.
+    E.stlcCanForm; eauto using validTy_compfe_ty with tyvalid tyeq.
     destruct H as (τ₁' & eqτ1' & vτ₁' & -> & tyx).
     rewrite compiler_is_fxToIs_embed.
     pose proof (tvs2w := typing_sub tvs2 _ wkm (wtSub_wkm _ τ₁)).
     rewrite (wsClosed_invariant (wt_implies_ws tvs2)) in tvs2w.
     refine (valrel_lambda _ _ _ _ _ _); crushOfType; rewrite <-?compiler_is_fxToIs_embed, ?repEmul_embed_leftinv; eauto;
-      crushTyping; E.crushTyping; eauto using validTy_compfi_ty, validPTy_embed with tyeq typing uval_typing.
+      crushTyping; E.crushTyping; eauto using validTy_compfe_ty, validPTy_embed with tyeq typing uval_typing.
     subst.
 
     destruct (valrel_implies_Value H1) as [vvs3 vvu3].
@@ -798,7 +798,7 @@ Proof.
     destruct (valrel_implies_Value vr4) as [vvs4 _].
 
     cbn in vr.
-    unshelve eapply valrel_ptarr_inversion in vr2; cbn; eauto using validTy_compfi_ty with tyvalid.
+    unshelve eapply valrel_ptarr_inversion in vr2; cbn; eauto using validTy_compfe_ty with tyvalid.
     destruct vr2 as (tsb & tub & τ' & -> & [=] & vτ' & tyeq & ttsb & ttub & trb); subst.
 
     refine (termrel_antired_star_left _ _).
@@ -819,12 +819,12 @@ Proof.
     eapply extr2; eauto using extract_value.
     lia.
     intros eq; specialize (sz5 eq); lia.
-  - fold compfi_ty in div.
+  - fold compfe_ty in div.
     eapply dwp_invert_imprecise in dwp.
     subst.
     eapply valrel_termrelnd₀.
     cbn in tvu.
-    E.stlcCanForm; eauto using validTy_compfi_ty with tyvalid tyeq.
+    E.stlcCanForm; eauto using validTy_compfe_ty with tyvalid tyeq.
     destruct H as (τ₁' & eqτ1' & vτ₁' & -> & tyx).
     replace τ₁ with (repEmul (embed τ₁)) at 2 by eapply repEmul_embed_leftinv.
     rewrite ?compiler_is_fxToIs_embed in *.
@@ -836,7 +836,7 @@ Proof.
         crushTyping; E.crushTyping;
       rewrite <-?compiler_is_fxToIs_embed in tyx;
       rewrite ?repEmul_embed_leftinv, <-?compiler_is_fxToIs_embed;
-        eauto using validTy_compfi_ty, validPTy_embed with tyeq typing uval_typing.
+        eauto using validTy_compfe_ty, validPTy_embed with tyeq typing uval_typing.
     }
     intros w2 vs2 vu2 fw2 _ vr2.
     eapply termrel_div_lt.
@@ -870,10 +870,10 @@ Proof.
   change (eraseAnnot _) with (extract n τ₂).
   rewrite ?extract_sub.
 
-  eapply invert_valrel_pEmulDV_for_caseUValProd in vr; eauto using validTy_compfi_ty.
+  eapply invert_valrel_pEmulDV_for_caseUValProd in vr; eauto using validTy_compfe_ty.
   destruct vr as [(vs1 & -> & es1 & vr1)|(-> & div)].
   - destruct (valrel_implies_Value vr1) as (vvs1 & _).
-    eapply valrel_ptprod_inversion  in vr1; cbn; eauto using validTy_compfi_ty.
+    eapply valrel_ptprod_inversion  in vr1; cbn; eauto using validTy_compfe_ty.
     destruct vr1 as (vs11 & vs12 & vu11 & vu12 & -> & -> & ot11 & ot12 & vr1').
     destruct (OfType_implies_Value ot11) as (vvs11 & _).
     destruct (OfType_implies_Value ot12) as (vvs12 & _).
@@ -1056,8 +1056,8 @@ Proof.
           rewrite repEmul_embed_leftinv.
           refine (F.preservation_star es3 _);
             eauto with typing uval_typing.
-          refine (WtEq _ tyeq₁ _ _ tvu); eauto using validTy_compfi_ty with tyvalid.
-          refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfi_ty with tyvalid.
+          refine (WtEq _ tyeq₁ _ _ tvu); eauto using validTy_compfe_ty with tyvalid.
+          refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfe_ty with tyvalid.
         }
         intros w' fw.
         destruct w; [exfalso; lia|].
@@ -1113,8 +1113,8 @@ Proof.
           rewrite repEmul_embed_leftinv.
           refine (F.preservation_star es3 _);
             eauto using extractT with typing.
-          refine (WtEq _ tyeq₂ _ _ tvu); eauto using validTy_compfi_ty with tyvalid.
-          refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfi_ty with tyvalid.
+          refine (WtEq _ tyeq₂ _ _ tvu); eauto using validTy_compfe_ty with tyvalid.
+          refine (E.typed_terms_are_valid _ _ _ _); eauto using validTy_compfe_ty with tyvalid.
         }
         
         intros w' fw.
@@ -1213,7 +1213,7 @@ Qed.
 Lemma inject_works_open {d n m τ ts tu Γ p} :
   dir_world_prec n m d p →
   ⟪ Γ ⊩ ts ⟦ d , m ⟧ tu : embed τ ⟫ →
-  ⟪ Γ ⊩ F.app (inject n τ) ts ⟦ d , m ⟧ tu : pEmulDV n p (compfi_ty τ) ⟫.
+  ⟪ Γ ⊩ F.app (inject n τ) ts ⟦ d , m ⟧ tu : pEmulDV n p (compfe_ty τ) ⟫.
 Proof.
   intros dwp lr.
   destruct lr as (? & ? & lr).

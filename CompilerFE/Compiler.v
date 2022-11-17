@@ -53,159 +53,159 @@ Module E.
   Include StlcEqui.Size.
 End E.
 
-Fixpoint compfi_ty (τ : F.Ty) : E.Ty :=
+Fixpoint compfe_ty (τ : F.Ty) : E.Ty :=
   match τ with
     | F.tunit => E.tunit
     | F.tbool => E.tbool
-    | F.tprod τ1 τ2 => E.tprod (compfi_ty τ1) (compfi_ty τ2)
-    | F.tarr τ1 τ2 => E.tarr (compfi_ty τ1) (compfi_ty τ2)
-    | F.tsum τ1 τ2 => E.tsum (compfi_ty τ1) (compfi_ty τ2)
+    | F.tprod τ1 τ2 => E.tprod (compfe_ty τ1) (compfe_ty τ2)
+    | F.tarr τ1 τ2 => E.tarr (compfe_ty τ1) (compfe_ty τ2)
+    | F.tsum τ1 τ2 => E.tsum (compfe_ty τ1) (compfe_ty τ2)
   end.
 
-Lemma validTy_compfi_ty {τ} : ValidTy (compfi_ty τ).
+Lemma validTy_compfe_ty {τ} : ValidTy (compfe_ty τ).
 Proof.
   induction τ; cbn; crushValidTy.
 Qed.
 
-Fixpoint compfi_env (Γ : F.Env) : E.Env :=
+Fixpoint compfe_env (Γ : F.Env) : E.Env :=
   match Γ with
     | F.empty => E.empty
-    | F.evar Γ τ => E.evar (compfi_env Γ) (compfi_ty τ)
+    | F.evar Γ τ => E.evar (compfe_env Γ) (compfe_ty τ)
   end.
 
-Fixpoint compfi (t : F.Tm) : E.Tm :=
+Fixpoint compfe (t : F.Tm) : E.Tm :=
   match t with
     | F.var x => E.var x
-    | F.abs τ t => E.abs (compfi_ty τ) (compfi t)
-    | F.app t1 t2 => E.app (compfi t1) (compfi t2)
+    | F.abs τ t => E.abs (compfe_ty τ) (compfe t)
+    | F.app t1 t2 => E.app (compfe t1) (compfe t2)
     | F.unit => E.unit
     | F.true => E.true
     | F.false => E.false
-    | F.ite t1 t2 t3 => E.ite (compfi t1) (compfi t2) (compfi t3)
-    | F.pair t1 t2 => E.pair (compfi t1) (compfi t2)
-    | F.proj₁ t => E.proj₁ (compfi t)
-    | F.proj₂ t => E.proj₂ (compfi t)
-    | F.inl t => E.inl (compfi t)
-    | F.inr t => E.inr (compfi t)
-    | F.caseof t1 t2 t3 => E.caseof (compfi t1) (compfi t2) (compfi t3)
-    | F.seq t1 t2 => E.seq (compfi t1) (compfi t2)
-    | F.fixt τ1 τ2 t => E.app (E.ufix (compfi_ty τ1) (compfi_ty τ2)) (compfi t)
+    | F.ite t1 t2 t3 => E.ite (compfe t1) (compfe t2) (compfe t3)
+    | F.pair t1 t2 => E.pair (compfe t1) (compfe t2)
+    | F.proj₁ t => E.proj₁ (compfe t)
+    | F.proj₂ t => E.proj₂ (compfe t)
+    | F.inl t => E.inl (compfe t)
+    | F.inr t => E.inr (compfe t)
+    | F.caseof t1 t2 t3 => E.caseof (compfe t1) (compfe t2) (compfe t3)
+    | F.seq t1 t2 => E.seq (compfe t1) (compfe t2)
+    | F.fixt τ1 τ2 t => E.app (E.ufix (compfe_ty τ1) (compfe_ty τ2)) (compfe t)
   end.
 
-Fixpoint compfi_annot (t : F.TmA) : E.TmA :=
+Fixpoint compfe_annot (t : F.TmA) : E.TmA :=
   match t with
     | F.a_var x => E.ea_var x
-    | F.a_abs τ₁ τ₂ t => E.ea_abs (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t)
-    | F.a_app τ₁ τ₂ t1 t2 => E.ea_app (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t1) (compfi_annot t2)
+    | F.a_abs τ₁ τ₂ t => E.ea_abs (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t)
+    | F.a_app τ₁ τ₂ t1 t2 => E.ea_app (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t1) (compfe_annot t2)
     | F.a_unit => E.ea_unit
     | F.a_true => E.ea_true
     | F.a_false => E.ea_false
-    | F.a_ite τ t1 t2 t3 => E.ea_ite (compfi_ty τ) (compfi_annot t1) (compfi_annot t2) (compfi_annot t3)
-    | F.a_pair τ₁ τ₂ t1 t2 => E.ea_pair (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t1) (compfi_annot t2)
-    | F.a_proj₁ τ₁ τ₂ t => E.ea_proj₁ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t)
-    | F.a_proj₂ τ₁ τ₂ t => E.ea_proj₂ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t)
-    | F.a_inl τ₁ τ₂ t => E.ea_inl (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t)
-    | F.a_inr τ₁ τ₂ t => E.ea_inr (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t)
-    | F.a_caseof τ₁ τ₂ τ t1 t2 t3 => E.ea_caseof (compfi_ty τ₁) (compfi_ty τ₂) (compfi_ty τ) (compfi_annot t1) (compfi_annot t2) (compfi_annot t3)
-    | F.a_seq τ t₁ t₂ => E.ea_seq (compfi_ty τ) (compfi_annot t₁) (compfi_annot t₂)
-    | F.a_fixt τ1 τ2 t => E.ea_app (tarr (tarr (compfi_ty τ1) (compfi_ty τ2)) (tarr (compfi_ty τ1) (compfi_ty τ2))) (tarr (compfi_ty τ1) (compfi_ty τ2)) (E.ufix_annot (compfi_ty τ1) (compfi_ty τ2)) (compfi_annot t)
+    | F.a_ite τ t1 t2 t3 => E.ea_ite (compfe_ty τ) (compfe_annot t1) (compfe_annot t2) (compfe_annot t3)
+    | F.a_pair τ₁ τ₂ t1 t2 => E.ea_pair (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t1) (compfe_annot t2)
+    | F.a_proj₁ τ₁ τ₂ t => E.ea_proj₁ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t)
+    | F.a_proj₂ τ₁ τ₂ t => E.ea_proj₂ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t)
+    | F.a_inl τ₁ τ₂ t => E.ea_inl (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t)
+    | F.a_inr τ₁ τ₂ t => E.ea_inr (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t)
+    | F.a_caseof τ₁ τ₂ τ t1 t2 t3 => E.ea_caseof (compfe_ty τ₁) (compfe_ty τ₂) (compfe_ty τ) (compfe_annot t1) (compfe_annot t2) (compfe_annot t3)
+    | F.a_seq τ t₁ t₂ => E.ea_seq (compfe_ty τ) (compfe_annot t₁) (compfe_annot t₂)
+    | F.a_fixt τ1 τ2 t => E.ea_app (tarr (tarr (compfe_ty τ1) (compfe_ty τ2)) (tarr (compfe_ty τ1) (compfe_ty τ2))) (tarr (compfe_ty τ1) (compfe_ty τ2)) (E.ufix_annot (compfe_ty τ1) (compfe_ty τ2)) (compfe_annot t)
   end.
 
 (* The two compiler definitions are the same modulo type annotations. *)
-Lemma compfi_compfi_annot {t} :
-  compfi (F.eraseAnnot t) = E.eraseAnnot (compfi_annot t).
+Lemma compfe_compfe_annot {t} :
+  compfe (F.eraseAnnot t) = E.eraseAnnot (compfe_annot t).
 Proof.
   induction t; cbn; f_equal; try assumption; try reflexivity.
 Qed.
 
-Fixpoint compfi_pctx_annot (C : F.PCtxA) : E.PCtxA :=
+Fixpoint compfe_pctx_annot (C : F.PCtxA) : E.PCtxA :=
   match C with
   | F.a_phole => E.ea_phole
-  | F.a_pabs τ₁ τ₂ C => E.ea_pabs (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C)
-  | F.a_papp₁ τ₁ τ₂ C t => E.ea_papp₁ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C) (compfi_annot t)
-  | F.a_papp₂ τ₁ τ₂ t C => E.ea_papp₂ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t) (compfi_pctx_annot C)
-  | F.a_pite₁ τ C t₂ t₃ => E.ea_pite₁ (compfi_ty τ) (compfi_pctx_annot C) (compfi_annot t₂) (compfi_annot t₃)
-  | F.a_pite₂ τ t₁ C t₃ => E.ea_pite₂ (compfi_ty τ) (compfi_annot t₁) (compfi_pctx_annot C) (compfi_annot t₃)
-  | F.a_pite₃ τ t₁ t₂ C => E.ea_pite₃ (compfi_ty τ) (compfi_annot t₁) (compfi_annot t₂) (compfi_pctx_annot C)
-  | F.a_ppair₁ τ₁ τ₂ C t => E.ea_ppair₁ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C) (compfi_annot t)
-  | F.a_ppair₂ τ₁ τ₂ t C => E.ea_ppair₂ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_annot t) (compfi_pctx_annot C)
-  | F.a_pproj₁ τ₁ τ₂ C => E.ea_pproj₁ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C)
-  | F.a_pproj₂ τ₁ τ₂ C => E.ea_pproj₂ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C)
-  | F.a_pinl τ₁ τ₂ C => E.ea_pinl (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C)
-  | F.a_pinr τ₁ τ₂ C => E.ea_pinr (compfi_ty τ₁) (compfi_ty τ₂) (compfi_pctx_annot C)
-  | F.a_pcaseof₁ τ₁ τ₂ τ C t₂ t₃ => E.ea_pcaseof₁ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_ty τ) (compfi_pctx_annot C) (compfi_annot t₂) (compfi_annot t₃)
-  | F.a_pcaseof₂ τ₁ τ₂ τ t₁ C t₃ => E.ea_pcaseof₂ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_ty τ) (compfi_annot t₁) (compfi_pctx_annot C) (compfi_annot t₃)
-  | F.a_pcaseof₃ τ₁ τ₂ τ t₁ t₂ C => E.ea_pcaseof₃ (compfi_ty τ₁) (compfi_ty τ₂) (compfi_ty τ) (compfi_annot t₁) (compfi_annot t₂) (compfi_pctx_annot C)
-  | F.a_pseq₁ τ C t₂ => E.ea_pseq₁ (compfi_ty τ) (compfi_pctx_annot C) (compfi_annot t₂)
-  | F.a_pseq₂ τ t₁ C => E.ea_pseq₂ (compfi_ty τ) (compfi_annot t₁) (compfi_pctx_annot C)
-  | F.a_pfixt τ₁ τ₂ C => E.ea_papp₂ (tarr (tarr (compfi_ty τ₁) (compfi_ty τ₂)) (tarr (compfi_ty τ₁) (compfi_ty τ₂)))
-                                   (tarr (compfi_ty τ₁) (compfi_ty τ₂))
-                                   (E.ufix_annot (compfi_ty τ₁) (compfi_ty τ₂))
-                                   (compfi_pctx_annot C)
+  | F.a_pabs τ₁ τ₂ C => E.ea_pabs (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C)
+  | F.a_papp₁ τ₁ τ₂ C t => E.ea_papp₁ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C) (compfe_annot t)
+  | F.a_papp₂ τ₁ τ₂ t C => E.ea_papp₂ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t) (compfe_pctx_annot C)
+  | F.a_pite₁ τ C t₂ t₃ => E.ea_pite₁ (compfe_ty τ) (compfe_pctx_annot C) (compfe_annot t₂) (compfe_annot t₃)
+  | F.a_pite₂ τ t₁ C t₃ => E.ea_pite₂ (compfe_ty τ) (compfe_annot t₁) (compfe_pctx_annot C) (compfe_annot t₃)
+  | F.a_pite₃ τ t₁ t₂ C => E.ea_pite₃ (compfe_ty τ) (compfe_annot t₁) (compfe_annot t₂) (compfe_pctx_annot C)
+  | F.a_ppair₁ τ₁ τ₂ C t => E.ea_ppair₁ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C) (compfe_annot t)
+  | F.a_ppair₂ τ₁ τ₂ t C => E.ea_ppair₂ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_annot t) (compfe_pctx_annot C)
+  | F.a_pproj₁ τ₁ τ₂ C => E.ea_pproj₁ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C)
+  | F.a_pproj₂ τ₁ τ₂ C => E.ea_pproj₂ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C)
+  | F.a_pinl τ₁ τ₂ C => E.ea_pinl (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C)
+  | F.a_pinr τ₁ τ₂ C => E.ea_pinr (compfe_ty τ₁) (compfe_ty τ₂) (compfe_pctx_annot C)
+  | F.a_pcaseof₁ τ₁ τ₂ τ C t₂ t₃ => E.ea_pcaseof₁ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_ty τ) (compfe_pctx_annot C) (compfe_annot t₂) (compfe_annot t₃)
+  | F.a_pcaseof₂ τ₁ τ₂ τ t₁ C t₃ => E.ea_pcaseof₂ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_ty τ) (compfe_annot t₁) (compfe_pctx_annot C) (compfe_annot t₃)
+  | F.a_pcaseof₃ τ₁ τ₂ τ t₁ t₂ C => E.ea_pcaseof₃ (compfe_ty τ₁) (compfe_ty τ₂) (compfe_ty τ) (compfe_annot t₁) (compfe_annot t₂) (compfe_pctx_annot C)
+  | F.a_pseq₁ τ C t₂ => E.ea_pseq₁ (compfe_ty τ) (compfe_pctx_annot C) (compfe_annot t₂)
+  | F.a_pseq₂ τ t₁ C => E.ea_pseq₂ (compfe_ty τ) (compfe_annot t₁) (compfe_pctx_annot C)
+  | F.a_pfixt τ₁ τ₂ C => E.ea_papp₂ (tarr (tarr (compfe_ty τ₁) (compfe_ty τ₂)) (tarr (compfe_ty τ₁) (compfe_ty τ₂)))
+                                   (tarr (compfe_ty τ₁) (compfe_ty τ₂))
+                                   (E.ufix_annot (compfe_ty τ₁) (compfe_ty τ₂))
+                                   (compfe_pctx_annot C)
   end.
 
 Lemma smoke_test_compiler :
-  (compfi_annot F.a_unit) = E.ea_unit.
+  (compfe_annot F.a_unit) = E.ea_unit.
 Proof.
   simpl. reflexivity.
 Qed.
 
-Lemma compfi_getevar_works {i τ Γ} :
+Lemma compfe_getevar_works {i τ Γ} :
   ⟪ i : τ ∈ Γ ⟫ →
-  ⟪ i : compfi_ty τ r∈ compfi_env Γ ⟫.
+  ⟪ i : compfe_ty τ r∈ compfe_env Γ ⟫.
 Proof.
   induction 1; constructor; assumption.
 Qed.
 
-Lemma compfi_typing_works {Γ t τ} :
+Lemma compfe_typing_works {Γ t τ} :
   ⟪ Γ ⊢ t : τ ⟫ →
-  ⟪ compfi_env Γ e⊢ compfi t : compfi_ty τ ⟫.
+  ⟪ compfe_env Γ e⊢ compfe t : compfe_ty τ ⟫.
 Proof.
-  induction 1; F.crushTyping; E.crushTyping; eauto using E.AnnotTyping, compfi_getevar_works, E.ufix_typing, validTy_compfi_ty.
+  induction 1; F.crushTyping; E.crushTyping; eauto using E.AnnotTyping, compfe_getevar_works, E.ufix_typing, validTy_compfe_ty.
 Qed.
 
-Lemma compfi_annot_typing_works {Γ t τ} :
+Lemma compfe_annot_typing_works {Γ t τ} :
   ⟪ Γ a⊢ t : τ ⟫ →
-  ⟪ compfi_env Γ ea⊢ compfi_annot t : compfi_ty τ ⟫.
+  ⟪ compfe_env Γ ea⊢ compfe_annot t : compfe_ty τ ⟫.
 Proof.
-  induction 1; F.crushTyping; E.crushTyping; eauto using E.AnnotTyping, compfi_getevar_works, E.ufix_annot_typing, validTy_compfi_ty.
+  induction 1; F.crushTyping; E.crushTyping; eauto using E.AnnotTyping, compfe_getevar_works, E.ufix_annot_typing, validTy_compfe_ty.
 Qed.
 
-Lemma compfi_pctx_annot_typing_works {C Γ Γ' τ τ'} :
+Lemma compfe_pctx_annot_typing_works {C Γ Γ' τ τ'} :
   ⟪ a⊢ C : Γ, τ → Γ', τ' ⟫ →
-  ⟪ ea⊢ compfi_pctx_annot C : compfi_env Γ, compfi_ty τ →
-  compfi_env Γ', compfi_ty τ' ⟫.
+  ⟪ ea⊢ compfe_pctx_annot C : compfe_env Γ, compfe_ty τ →
+  compfe_env Γ', compfe_ty τ' ⟫.
 Proof.
-  induction 1; eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty.
-  - eapply compfi_annot_typing_works in H0.
-    eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty with tyvalid.
-  - eapply compfi_annot_typing_works in H.
-    eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty with tyvalid.
-  - eapply compfi_annot_typing_works in H0, H1.
-    eauto using PCtxTypingAnnot, compfi_typing_works.
-  - eapply compfi_annot_typing_works in H, H1.
-    eauto using PCtxTypingAnnot, compfi_typing_works.
-  - eapply compfi_annot_typing_works in H, H0.
-    eauto using PCtxTypingAnnot, compfi_typing_works.
-  - eapply compfi_annot_typing_works in H0.
-    eauto using PCtxTypingAnnot, compfi_typing_works.
-  - eapply compfi_annot_typing_works in H.
-    eauto using PCtxTypingAnnot, compfi_typing_works.
-  - eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty with tyvalid.
-  - eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty with tyvalid.
-  - eapply compfi_annot_typing_works in H0, H1.
-    eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty.
-  - eapply compfi_annot_typing_works in H, H1.
-    eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty.
-  - eapply compfi_annot_typing_works in H, H0.
-    eauto using PCtxTypingAnnot, compfi_typing_works, validTy_compfi_ty.
-  - eapply compfi_annot_typing_works in H0.
-    eauto using PCtxTypingAnnot, compfi_typing_works, E.ufix_annot_typing.
-  - eapply compfi_annot_typing_works in H.
-    eauto using PCtxTypingAnnot, compfi_typing_works, E.ufix_annot_typing.
-  - eauto using PCtxTypingAnnot, compfi_typing_works, E.ufix_annot_typing, validTy_compfi_ty with tyvalid2.
+  induction 1; eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty.
+  - eapply compfe_annot_typing_works in H0.
+    eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty with tyvalid.
+  - eapply compfe_annot_typing_works in H.
+    eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty with tyvalid.
+  - eapply compfe_annot_typing_works in H0, H1.
+    eauto using PCtxTypingAnnot, compfe_typing_works.
+  - eapply compfe_annot_typing_works in H, H1.
+    eauto using PCtxTypingAnnot, compfe_typing_works.
+  - eapply compfe_annot_typing_works in H, H0.
+    eauto using PCtxTypingAnnot, compfe_typing_works.
+  - eapply compfe_annot_typing_works in H0.
+    eauto using PCtxTypingAnnot, compfe_typing_works.
+  - eapply compfe_annot_typing_works in H.
+    eauto using PCtxTypingAnnot, compfe_typing_works.
+  - eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty with tyvalid.
+  - eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty with tyvalid.
+  - eapply compfe_annot_typing_works in H0, H1.
+    eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty.
+  - eapply compfe_annot_typing_works in H, H1.
+    eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty.
+  - eapply compfe_annot_typing_works in H, H0.
+    eauto using PCtxTypingAnnot, compfe_typing_works, validTy_compfe_ty.
+  - eapply compfe_annot_typing_works in H0.
+    eauto using PCtxTypingAnnot, compfe_typing_works, E.ufix_annot_typing.
+  - eapply compfe_annot_typing_works in H.
+    eauto using PCtxTypingAnnot, compfe_typing_works, E.ufix_annot_typing.
+  - eauto using PCtxTypingAnnot, compfe_typing_works, E.ufix_annot_typing, validTy_compfe_ty with tyvalid2.
     cbn.
-    constructor; eauto using ufix_annot_typing, validTy_compfi_ty with tyvalid.
+    constructor; eauto using ufix_annot_typing, validTy_compfe_ty with tyvalid.
 Qed.
 
 Lemma compileCtx_works {Γ i τ} :
@@ -232,7 +232,7 @@ Local Ltac crush :=
     ); try lia; eauto.
 
 Lemma compiler_is_fxToIs_embed :
-  ∀ τ : F.Ty, compfi_ty τ = fxToIs (embed τ).
+  ∀ τ : F.Ty, compfe_ty τ = fxToIs (embed τ).
 Proof.
   induction τ; simpl;
     try rewrite IHτ1; try rewrite IHτ2;
@@ -240,7 +240,7 @@ Proof.
 Qed.
 
 Lemma compiler_is_fxToIs_embed_env :
-  ∀ Γ : F.Env, compfi_env Γ = fxToIsCtx (embedCtx Γ).
+  ∀ Γ : F.Env, compfe_env Γ = fxToIsCtx (embedCtx Γ).
 Proof.
   induction Γ; crush; apply compiler_is_fxToIs_embed.
 Qed.
@@ -278,7 +278,7 @@ Section CompatibilityLemmas.
   Lemma compat_lambda_embed' {Γ τ' ts d n tu τ} :
     ValidPEnv Γ -> ValidPTy τ ->
     ⟪ Γ p▻ embed τ' ⊩ ts ⟦ d , n ⟧ tu : τ ⟫ →
-    ⟪ Γ ⊩ (F.abs τ' ts) ⟦ d , n ⟧ (E.abs (compfi_ty τ') tu) : ptarr (embed τ') τ ⟫.
+    ⟪ Γ ⊩ (F.abs τ' ts) ⟦ d , n ⟧ (E.abs (compfe_ty τ') tu) : ptarr (embed τ') τ ⟫.
   Proof.
     rewrite (compiler_is_fxToIs_embed τ').
     apply compat_lambda_embed.
@@ -422,7 +422,7 @@ Section CompatibilityLemmas.
   Lemma compat_fix' {Γ d n ts tu τ₁ τ₂} :
     ValidPEnv Γ ->
     ⟪ Γ ⊩ ts ⟦ d , n ⟧ tu : embed (F.tarr (F.tarr τ₁ τ₂) (F.tarr τ₁ τ₂)) ⟫ →
-    ⟪ Γ ⊩ F.fixt τ₁ τ₂ ts ⟦ d , n ⟧ E.app (E.ufix (compfi_ty τ₁) (compfi_ty τ₂)) tu : ptarr (embed τ₁) (embed τ₂) ⟫.
+    ⟪ Γ ⊩ F.fixt τ₁ τ₂ ts ⟦ d , n ⟧ E.app (E.ufix (compfe_ty τ₁) (compfe_ty τ₂)) tu : ptarr (embed τ₁) (embed τ₂) ⟫.
   Proof.
     intros vΓ tr.
     rewrite <- (repEmul_embed_leftinv τ₁) at 1.
@@ -442,9 +442,9 @@ Section CompatibilityLemmas.
     exact compat_fix'.
   Qed.
 
-  Lemma compfi_correct {Γ d n ts τ} :
+  Lemma compfe_correct {Γ d n ts τ} :
     ⟪ Γ ⊢ ts : τ ⟫ →
-    ⟪ embedCtx Γ ⊩ ts ⟦ d , n ⟧ compfi ts : embed τ ⟫.
+    ⟪ embedCtx Γ ⊩ ts ⟦ d , n ⟧ compfe ts : embed τ ⟫.
   Proof.
     induction 1;
       cbn -[E.ufix_annot E.ufix₁_annot];
@@ -466,17 +466,17 @@ Section CompatibilityLemmas.
       , validPEnv_embedCtx.
   Qed.
 
-  Lemma compfi_correct' {Γ d n ts τ τ'} :
+  Lemma compfe_correct' {Γ d n ts τ τ'} :
     ⟪ Γ ⊢ ts : τ ⟫ →
     τ' = embed τ ->
-    ⟪ embedCtx Γ ⊩ ts ⟦ d , n ⟧ compfi ts : τ' ⟫.
+    ⟪ embedCtx Γ ⊩ ts ⟦ d , n ⟧ compfe ts : τ' ⟫.
   Proof.
-    intros; subst; now eapply compfi_correct.
+    intros; subst; now eapply compfe_correct.
   Qed.
 
-  Lemma compfi_annot_correct {Γ d n ts τ} :
+  Lemma compfe_annot_correct {Γ d n ts τ} :
     ⟪ Γ a⊢ ts : τ ⟫ →
-    ⟪ embedCtx Γ ⊩ F.eraseAnnot ts ⟦ d , n ⟧ E.eraseAnnot (compfi_annot ts) : embed τ ⟫.
+    ⟪ embedCtx Γ ⊩ F.eraseAnnot ts ⟦ d , n ⟧ E.eraseAnnot (compfe_annot ts) : embed τ ⟫.
   Proof.
     induction 1;
       cbn -[E.ufix_annot E.ufix₁_annot];
@@ -498,22 +498,22 @@ Section CompatibilityLemmas.
       , validPEnv_embedCtx.
   Qed.
 
-  Lemma compfi_ctx_correct {Γ Γ' d n C τ τ'} :
+  Lemma compfe_ctx_correct {Γ Γ' d n C τ τ'} :
     ⟪ a⊢ C : Γ , τ → Γ' , τ'⟫ →
-    ⟪ ⊩ F.eraseAnnot_pctx C ⟦ d , n ⟧ eraseAnnot_pctx (compfi_pctx_annot C) : embedCtx Γ , embed τ → embedCtx Γ' , embed τ' ⟫.
+    ⟪ ⊩ F.eraseAnnot_pctx C ⟦ d , n ⟧ eraseAnnot_pctx (compfe_pctx_annot C) : embedCtx Γ , embed τ → embedCtx Γ' , embed τ' ⟫.
   Proof.
     intros ty; unfold OpenLRCtxN; split; [|split];
       rewrite <-?compiler_is_fxToIs_embed in *;
       rewrite <-?compiler_is_fxToIs_embed_env in *;
       rewrite ?repEmul_embed_leftinv in *;
       rewrite ?repEmulCtx_embedCtx_leftinv in *;
-      eauto using F.eraseAnnot_pctxT, E.eraseAnnot_pctxT, compfi_pctx_annot_typing_works, F.pctxtyping_app, F.eraseAnnot_pctxT, E.pctxtyping_app, E.eraseAnnot_pctxT.
+      eauto using F.eraseAnnot_pctxT, E.eraseAnnot_pctxT, compfe_pctx_annot_typing_works, F.pctxtyping_app, F.eraseAnnot_pctxT, E.pctxtyping_app, E.eraseAnnot_pctxT.
 
     induction ty; simpl;
     intros ts tu lr;
       try assumption; (* deal with phole *)
       specialize (IHty ts tu lr);
-      rewrite <-?compfi_compfi_annot;
+      rewrite <-?compfe_compfe_annot;
       repeat (try match goal with
              | [ |- ⟪_⊩ F.abs _ _ ⟦d,n⟧ E.abs _ _ : _ ⟫ ] => eapply compat_lambda_embed'
              | [ |- ⟪_⊩ F.app _ _ ⟦d,n⟧ E.app _ _ : _ ⟫ ] => eapply compat_app
@@ -528,7 +528,7 @@ Section CompatibilityLemmas.
              | [ |- ⟪_⊩ F.seq _ _ ⟦d,n⟧ E.seq _ _ : _ ⟫ ] => eapply compat_seq
              (* | [ |- context[ ptarr (embed ?τ1) (embed ?τ2) ]] => *)
              (*   change (ptarr (embed τ1) (embed τ2)) with (embed (F.tarr τ1 τ2)) *)
-             | [ |- ⟪_⊩ _ ⟦d,n⟧ compfi _ : _ ⟫ ] => eapply compfi_correct'
+             | [ |- ⟪_⊩ _ ⟦d,n⟧ compfe _ : _ ⟫ ] => eapply compfe_correct'
              | [ |- ⟪ _ ⊢ F.eraseAnnot _ : _ ⟫ ] => eapply F.eraseAnnotT
              | [ |- ⟪ _ ⊢ E.eraseAnnot _ : _ ⟫ ] => eapply E.eraseAnnotT
               end;
@@ -544,19 +544,19 @@ End CompatibilityLemmas.
 Lemma equivalenceReflection {Γ t₁ t₂ τ} :
   ⟪ Γ ⊢ t₁ : τ ⟫ →
   ⟪ Γ ⊢ t₂ : τ ⟫ →
-  ⟪ compfi_env Γ e⊢ compfi t₁ ≃ compfi t₂ : compfi_ty τ ⟫ →
+  ⟪ compfe_env Γ e⊢ compfe t₁ ≃ compfe t₂ : compfe_ty τ ⟫ →
   ⟪ Γ ⊢ t₁ ≃ t₂ : τ ⟫.
 Proof.
   revert t₁ t₂ τ.
   enough (∀ {t₁ t₂} τ,
             ⟪ Γ ⊢ t₁ : τ ⟫ →
             ⟪ Γ ⊢ t₂ : τ ⟫ →
-            ⟪ compfi_env Γ e⊢ compfi t₁ ≃ compfi t₂ : compfi_ty τ ⟫ →
+            ⟪ compfe_env Γ e⊢ compfe t₁ ≃ compfe t₂ : compfe_ty τ ⟫ →
             ∀ C τ',
               ⟪ a⊢ C : Γ , τ → F.empty, τ' ⟫ →
                     F.Terminating (F.pctx_app t₁ (F.eraseAnnot_pctx C)) → F.Terminating (F.pctx_app t₂ (F.eraseAnnot_pctx C))) as Hltor
   by (intros t₁ t₂ τ ty1 ty2 eq C τ';
-      assert (⟪ compfi_env Γ e⊢ compfi t₂ ≃ compfi t₁ : compfi_ty τ ⟫)
+      assert (⟪ compfe_env Γ e⊢ compfe t₂ ≃ compfe t₁ : compfe_ty τ ⟫)
         by (apply E.pctx_equiv_symm; assumption);
   split;
   refine (Hltor _ _ τ _ _ _ C τ' _); assumption).
@@ -565,26 +565,26 @@ Proof.
 
   destruct (F.Terminating_TermHor term) as [n termN]; clear term.
 
-  assert (⟪ embedCtx Γ ⊩ t₁ ⟦ dir_lt , S n ⟧ compfi t₁ : embed τ ⟫) as lrt₁ by exact (compfi_correct ty1).
+  assert (⟪ embedCtx Γ ⊩ t₁ ⟦ dir_lt , S n ⟧ compfe t₁ : embed τ ⟫) as lrt₁ by exact (compfe_correct ty1).
 
-  assert (⟪ ⊩ (F.eraseAnnot_pctx C) ⟦ dir_lt , S n ⟧ E.eraseAnnot_pctx (compfi_pctx_annot C) : embedCtx Γ , embed τ → pempty , embed τ' ⟫) as lrC_lt
-      by apply (compfi_ctx_correct tyC).
+  assert (⟪ ⊩ (F.eraseAnnot_pctx C) ⟦ dir_lt , S n ⟧ E.eraseAnnot_pctx (compfe_pctx_annot C) : embedCtx Γ , embed τ → pempty , embed τ' ⟫) as lrC_lt
+      by apply (compfe_ctx_correct tyC).
 
   apply lrC_lt in lrt₁.
 
-  assert (E.Terminating (E.pctx_app (compfi t₁) (E.eraseAnnot_pctx (compfi_pctx_annot C))))
+  assert (E.Terminating (E.pctx_app (compfe t₁) (E.eraseAnnot_pctx (compfe_pctx_annot C))))
     as termu₁ by (apply (adequacy_lt lrt₁ termN); lia).
 
-  assert (E.Terminating (E.pctx_app (compfi t₂) (E.eraseAnnot_pctx (compfi_pctx_annot C)))).
-  eapply eq; try assumption; eauto using compfi_pctx_annot_typing_works, validTy_compfi_ty.
-  apply (compfi_pctx_annot_typing_works tyC).
+  assert (E.Terminating (E.pctx_app (compfe t₂) (E.eraseAnnot_pctx (compfe_pctx_annot C)))).
+  eapply eq; try assumption; eauto using compfe_pctx_annot_typing_works, validTy_compfe_ty.
+  apply (compfe_pctx_annot_typing_works tyC).
 
   destruct (E.Terminating_TermHor H) as [n' termN']; clear H.
 
-  assert (⟪ ⊩ F.eraseAnnot_pctx C ⟦ dir_gt , S n' ⟧ E.eraseAnnot_pctx (compfi_pctx_annot C) : embedCtx Γ , embed τ → pempty , embed τ' ⟫) as lrC_gt
-    by (apply (compfi_ctx_correct tyC)).
+  assert (⟪ ⊩ F.eraseAnnot_pctx C ⟦ dir_gt , S n' ⟧ E.eraseAnnot_pctx (compfe_pctx_annot C) : embedCtx Γ , embed τ → pempty , embed τ' ⟫) as lrC_gt
+    by (apply (compfe_ctx_correct tyC)).
 
-  assert (⟪ embedCtx Γ ⊩ t₂ ⟦ dir_gt , S n' ⟧ compfi t₂ : embed τ ⟫) as lrt₂ by exact (compfi_correct ty2).
+  assert (⟪ embedCtx Γ ⊩ t₂ ⟦ dir_gt , S n' ⟧ compfe t₂ : embed τ ⟫) as lrt₂ by exact (compfe_correct ty2).
 
   apply lrC_gt in lrt₂.
 
@@ -594,7 +594,7 @@ Qed.
 Lemma equivalenceReflectionEmpty {t₁ t₂ τ} :
   ⟪ F.empty ⊢ t₁ : τ ⟫ →
   ⟪ F.empty ⊢ t₂ : τ ⟫ →
-  ⟪ E.empty e⊢ compfi t₁ ≃ compfi t₂ : compfi_ty τ ⟫ →
+  ⟪ E.empty e⊢ compfe t₁ ≃ compfe t₂ : compfe_ty τ ⟫ →
   ⟪ F.empty ⊢ t₁ ≃ t₂ : τ ⟫.
 Proof.
   apply @equivalenceReflection.
