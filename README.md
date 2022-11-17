@@ -1,12 +1,58 @@
 # fixismu-coq
 [![build](https://github.com/dominiquedevriese/fixismu-coq/actions/workflows/build.yml/badge.svg)](https://github.com/dominiquedevriese/fixismu-coq/actions/workflows/build.yml)
 
-Coq proofs establishing semantic equi-expressiveness results for recursive types between [STLC] with
+Coq proofs for the results reported in [_On the Semantic Expresiveness of
+Recursive Types_][arxiv]. They establish semantic equi-expressiveness results
+between simply-typed lambda calculi with
 1. a fixpoint combinator
 2. iso-recurisve types
 3. equi-recursive types
 
-See the paper [on arxiv][arxiv]
+The proof uses a technique called approximate backtranslation, which is
+discussed in detail in [the paper][arxiv] and its references.
+
+This artifact was developed by [Dominique Devriese] and [Eric Mark Martin]. It leverages machinery developed by [Steven Keuchel].
+
+[Dominique Devriese]: mailto:dominique.devriese@cs.kuleuven.be
+[Eric Mark Martin]: https://github.com/ericmarkmartin
+[Steven Keuchel]: mailto:steven.keuchel@ugent.be
+
+## Structure of the Proof
+
+Here is a list of Coq files with a short description of what they contain, in 
+dependency order. 
+
+* Common/Common.v: A few simple arithmetic lemmas that we didn't immediately
+find in the Coq libraries
+* Common/Relations.v: Lemmas and definitions concerning the transitive and transitive-reflexive closure of relations and the transitive-reflexive closure indexed with a step count.
+* Db: Definitions and lemmas for working with De Bruijn binding structure
+  * Db/Spec.v: A generic specification of languages with a De Bruijn binding structure, along with a set of type classes that may be instantiated for such languages.
+  * Db/Inst.v: Some instances for the type classes in Db/Spec.v.
+  * Db/Tactics.v: A (weird?) tactic used in Db/Lemmas.v.
+  * Db/Lemmas.v: a set of lemmas about languages instantiating the type classes in Db/Spec.v
+  * Db/WellScoping.v: A set of lemmas related to well-scopedness of terms and substitutions.
+* RecTypes/*.v: Definitions and lemmas for the type grammar shared by StlcIso and StlcEqui
+* Stlc: Definitions and lemmas for the simply-typed lambda calculi we work with
+  * StlcFix/*.v: STLC with a fixpoint operator
+  * StlcIso/*.v: STLC with iso-recurisve types
+  * StlcEqui/*.v: STLC with equi-recursive types
+* UVal: Definition and lemmas for the backtranslation types
+  * UValFI/UVal.v: The backtranslation type for the StlcFix-StlcIso relation
+  * UValFE/UVal.v: The backtranslation type for the StlcFix-StlcEqui relation
+  * UValIE/UVal.v: The backtranslation type for the StlcIso-StlcEqui relation
+* LogRel: Definition of the cross-language logical relations, and lemmas.
+  * LogRelFI/*.v: Relation between StlcFix and StlcIso
+  * LogRelFE/*.v: Relation between StlcFix and StlcEqui
+  * LogRelIE/*.v: Relation between StlcIso and StlcEqui
+* Compiler: Definition of the compilers and proof of equivalence reflection
+  * LogRelFI/*.v: Compiler from StlcFix to StlcIso
+  * LogRelFE/*.v: Compiler from StlcFix to StlcEqui
+  * LogRelIE/*.v: Compiler from StlcIso to StlcEqui
+* BackTrans: Definitions of the back-translation and lemmas
+  * LogRelFI/*.v: Backtranslation from StlcIso to StlcFix
+  * LogRelFE/*.v: Backtranslation from StlcEqui to StlcFix
+  * LogRelIE/*.v: Backtranslation from StlcEqui to StlcIso
+* FullAbstraction.v: Proof of equivalence preservation and full abstraction.
 
 [arxiv]: https://arxiv.org/abs/2010.10859
 [STLC]: https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
@@ -21,7 +67,7 @@ See the paper [on arxiv][arxiv]
 - 8.15
 - 8.16
 
-This is checked using the [docker-coq] github action.
+This is checked using the [docker-coq] github action (see the badge at the top of this file).
 
 [docker-coq]: https://github.com/coq-community/docker-coq-action
 
@@ -33,6 +79,23 @@ We depend on only two Axioms
 
 [functional_extensionality_dep]: https://coq.inria.fr/library/Coq.Logic.FunctionalExtensionality.html#functional_extensionality_dep
 [eq_rect_eq]: https://coq.inria.fr/library/Coq.Logic.Eqdep.html#Eq_rect_eq.eq_rect_eq
+
+## Differences to the Paper
+
+1. Each of the languages has a second specification of their terms, contexts,
+   and typing rules (for both terms and contexts) in SpecAnnot.v. These
+   specifications fully annotate the types in all terms (e.g. terms of type `τ x
+   σ` are annotated with `τ` and `σ`). These specifications come with
+   `eraseAnnot` functions to convert back into the normal specification by
+   erasing these annotations, along with proofs that these conversions are
+   type-sound.
+   
+   This is only an implementation detail—the top-level full abstraction
+   results are stated with respect to the "normal" specification.
+
+2. This artifact, unlike the paper, cannot elide the contractiveness of
+   recursive types for consision. You will see `ValidTy τ` throughout the
+   artifact, which says that `τ` is both contractive and closed.
 
 ## Paper-to-artifact correspondence guide
 
